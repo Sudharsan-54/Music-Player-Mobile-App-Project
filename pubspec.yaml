@@ -1,0 +1,52 @@
+name: jazz_music
+description: "A cross-platform music player supporting MP3, FLAC, ALAC and video-to-audio extraction."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # --- State Management ---
+  flutter_riverpod: ^2.6.1
+
+  # --- Routing ---
+  go_router: ^15.0.0
+
+  # --- Audio Playback ---
+  just_audio: ^0.10.5
+  audio_service: ^0.18.16
+  audio_session: ^0.1.22
+
+  # --- File Picking ---
+  file_picker: ^10.3.10
+
+  # --- Video-to-Audio Extraction (native only) ---
+  ffmpeg_kit_flutter_new_audio: ^2.0.0
+
+  # --- Metadata Extraction ---
+  audiotags: ^1.4.5
+
+  # --- Local Database (sqflite - cross-platform, no generator needed) ---
+  sqflite: ^2.4.1
+  sqflite_common_ffi: ^2.3.4+4
+
+  # --- Utilities ---
+  path_provider: ^2.1.5
+  path: ^1.9.0
+  uuid: ^4.5.3
+  shared_preferences: ^2.3.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
