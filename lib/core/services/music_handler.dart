@@ -2,6 +2,9 @@ import 'package:audio_service/audio_service.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../models/song_model.dart';
 
+/// Repeat mode for the player.
+enum AudioRepeatMode { off, all, one }
+
 /// Converts our [SongModel] to an [audio_service] MediaItem.
 MediaItem songToMediaItem(SongModel song) {
   return MediaItem(
@@ -17,6 +20,13 @@ MediaItem songToMediaItem(SongModel song) {
 /// the OS media notification system via audio_service.
 class MusicHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   final AudioPlayer _player = AudioPlayer();
+
+  // ── Shuffle / Repeat state ──
+  bool _shuffleEnabled = false;
+  AudioRepeatMode _repeatMode = AudioRepeatMode.off;
+
+  bool get shuffleEnabled => _shuffleEnabled;
+  AudioRepeatMode get repeatMode => _repeatMode;
 
   MusicHandler() {
     _initStreams();
@@ -142,6 +152,29 @@ class MusicHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
       speed: _player.speed,
       queueIndex: _player.currentIndex,
     ));
+  }
+
+  // ──────────────── Shuffle / Repeat ────────────────
+
+  Future<void> toggleShuffle() async {
+    _shuffleEnabled = !_shuffleEnabled;
+    await _player.setShuffleModeEnabled(_shuffleEnabled);
+    _broadcastState(_player.playbackEvent);
+  }
+
+  Future<void> cycleRepeatMode() async {
+    _repeatMode = switch (_repeatMode) {
+      AudioRepeatMode.off => AudioRepeatMode.all,
+      AudioRepeatMode.all => AudioRepeatMode.one,
+      AudioRepeatMode.one => AudioRepeatMode.off,
+    };
+    final loopMode = switch (_repeatMode) {
+      AudioRepeatMode.off => LoopMode.off,
+      AudioRepeatMode.all => LoopMode.all,
+      AudioRepeatMode.one => LoopMode.one,
+    };
+    await _player.setLoopMode(loopMode);
+    _broadcastState(_player.playbackEvent);
   }
 
   // Expose streams for the UI

@@ -15,6 +15,7 @@ class MiniPlayer extends ConsumerWidget {
     final mediaItemAsync = ref.watch(currentMediaItemProvider);
     final playbackAsync = ref.watch(playbackStateProvider);
     final currentSong = ref.watch(playerSongProvider);
+    final shuffle = ref.watch(shuffleProvider);
 
     if (currentSong == null) return const SizedBox.shrink();
 
@@ -88,16 +89,33 @@ class MiniPlayer extends ConsumerWidget {
               icon: Icons.skip_previous_rounded,
               onTap: () => ref.read(musicHandlerProvider).skipToPrevious(),
             ),
-            _MiniControl(
-              icon: isPlaying
-                  ? Icons.pause_circle_filled_rounded
-                  : Icons.play_circle_filled_rounded,
-              size: 36,
-              color: AppTheme.primaryColor,
-              onTap: () {
-                final handler = ref.read(musicHandlerProvider);
-                isPlaying ? handler.pause() : handler.play();
-              },
+            Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                _MiniControl(
+                  icon: isPlaying
+                      ? Icons.pause_circle_filled_rounded
+                      : Icons.play_circle_filled_rounded,
+                  size: 36,
+                  color: AppTheme.primaryColor,
+                  onTap: () {
+                    final handler = ref.read(musicHandlerProvider);
+                    isPlaying ? handler.pause() : handler.play();
+                  },
+                ),
+                if (shuffle)
+                  Positioned(
+                    bottom: 2,
+                    child: Container(
+                      width: 5,
+                      height: 5,
+                      decoration: const BoxDecoration(
+                        color: AppTheme.primaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
             ),
             _MiniControl(
               icon: Icons.skip_next_rounded,
